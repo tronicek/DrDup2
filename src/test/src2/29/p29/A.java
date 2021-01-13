@@ -1,0 +1,27 @@
+package p29;
+
+public class A {
+
+    int x;
+
+    void inc() {
+        x++;
+    }
+
+    void dec() {
+        x--;
+    }
+
+    void print(int a) {
+        if (a > 0) {
+            inc();
+        } else {
+            dec();
+        }
+    }
+    
+    void write(int a) {
+        if (a > 0) dec();
+        else dec();
+    }
+}

@@ -1,0 +1,11 @@
+/bigclonebench/**/*.xml
+/bigclonebench-stmt/**/*.xml
+/data/
+/evaluation/**/*.xml
+/output/
+/performance/
+/target/
+/verification/**/*.xml
+/verification-stmt/**/*.xml
+/verification-stmts/**/*.xml
+/**/*.bin
