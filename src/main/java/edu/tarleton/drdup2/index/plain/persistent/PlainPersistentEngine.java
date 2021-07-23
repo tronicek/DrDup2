@@ -127,6 +127,9 @@ public class PlainPersistentEngine extends Engine {
         if (alg.equals("online")) {
             throw new AssertionError("rename=consistent, algorithm=online: not supported");
         }
+        if (level.equals("statements")) {
+            throw new AssertionError("rename=consistent, level=statements: not supported");
+        }
         boolean methodLevel = level.equals("method");
         Path dir = Paths.get(sourceDir).toAbsolutePath();
         switch (index) {

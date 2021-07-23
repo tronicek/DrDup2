@@ -604,8 +604,8 @@ public class SimplifiedCompressedIndexStmtBuilderNaive extends CompressedIndexBu
         if (inMethod == 0) {
             return;
         }
-        enterBlock();
         stack.push();
+        enterBlock();
         addChild(n);
         n.getVariable().accept(this, arg);
         n.getIterable().accept(this, arg);
@@ -620,8 +620,8 @@ public class SimplifiedCompressedIndexStmtBuilderNaive extends CompressedIndexBu
         if (inMethod == 0) {
             return;
         }
-        enterBlock();
         stack.push();
+        enterBlock();
         addChild(n);
         addChild("INIT");
         n.getInitialization().forEach(p -> p.accept(this, arg));
@@ -632,8 +632,8 @@ public class SimplifiedCompressedIndexStmtBuilderNaive extends CompressedIndexBu
         addChild("UPDATE_END");
         n.getBody().accept(this, arg);
         addChildEndWithPos(n);
-        stack.pop();
         exitBlock();
+        stack.pop();
     }
 
     @Override

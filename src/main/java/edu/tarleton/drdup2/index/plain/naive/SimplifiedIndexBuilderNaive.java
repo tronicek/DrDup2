@@ -83,7 +83,6 @@ import edu.tarleton.drdup2.clones.Pos;
 import edu.tarleton.drdup2.index.IndexBuilder;
 import edu.tarleton.drdup2.index.plain.Trie;
 import edu.tarleton.drdup2.rename.RenameStrategy;
-import edu.tarleton.drdup2.symtab.Entry;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -167,10 +166,9 @@ public class SimplifiedIndexBuilderNaive extends IndexBuilder {
         append(lab + "_end");
     }
 
-    private void appendId(String scope, String id) {
+    private void appendId(String id) {
         for (StackNode node : stack) {
             RenameStrategy rs = node.getRenameStrategy();
-//            String fid = fullId(rs, scope, id);
             String rid = rs.rename(id);
             if (rid == null) {
                 rid = rs.declareGlobal(id);
@@ -178,25 +176,6 @@ public class SimplifiedIndexBuilderNaive extends IndexBuilder {
             List<String> labs = node.getLabels();
             labs.add(rid);
         }
-    }
-
-    private String fullId(RenameStrategy rs, String scope, String id) {
-        if (scope == null) {
-            return id;
-        }
-        String[] part = scope.split("\\.");
-        Entry entry = rs.lookup(part[0]);
-        String ren;
-        if (entry == null) {
-            ren = part[0];
-        } else {
-            String t = entry.getType();
-            ren = (t == null) ? entry.norm() : rs.rename(t);
-        }
-        for (int i = 1; i < part.length; i++) {
-            ren = rs.rename(ren + "." + part[i]);
-        }
-        return ren + "." + id;
     }
 
     private Pos pos(Node n) {
@@ -574,8 +553,7 @@ public class SimplifiedIndexBuilderNaive extends IndexBuilder {
             n.getTypeArguments().ifPresent(p -> p.forEach(v -> v.accept(this, arg)));
             append("TYPE_ARGS_END");
         }
-        String scope = toString(n.getScope());
-        appendId(scope, n.getNameAsString());
+        appendId(n.getNameAsString());
         appendEnd(n);
     }
 
@@ -760,8 +738,7 @@ public class SimplifiedIndexBuilderNaive extends IndexBuilder {
             n.getTypeArguments().ifPresent(p -> p.forEach(v -> v.accept(this, arg)));
             append("TYPE_ARGS_END");
         }
-        String scope = toString(n.getScope());
-        appendId(scope, n.getNameAsString());
+        appendId(n.getNameAsString());
         append("ARGS");
         n.getArguments().forEach(p -> p.accept(this, arg));
         append("ARGS_END");
@@ -818,8 +795,7 @@ public class SimplifiedIndexBuilderNaive extends IndexBuilder {
         }
         append(n);
         n.getScope().accept(this, arg);
-        String scope = toString(n.getScope());
-        appendId(scope, n.getIdentifier());
+        appendId(n.getIdentifier());
         append("TYPE_ARGS");
         n.getTypeArguments().ifPresent(p -> p.forEach(v -> v.accept(this, arg)));
         append("TYPE_ARGS_END");
@@ -842,8 +818,7 @@ public class SimplifiedIndexBuilderNaive extends IndexBuilder {
         }
         append(n);
         n.getQualifier().ifPresent(p -> p.accept(this, arg));
-        String scope = toString(n.getQualifier());
-        appendId(scope, n.getIdentifier());
+        appendId(n.getIdentifier());
         appendEnd(n);
     }
 
@@ -917,7 +892,7 @@ public class SimplifiedIndexBuilderNaive extends IndexBuilder {
             append("VAR_ARGS");
         }
         declareVar(n.getNameAsString(), n.getTypeAsString());
-        appendId(null, n.getNameAsString());
+        appendId(n.getNameAsString());
         appendEnd(n);
     }
 
@@ -929,7 +904,7 @@ public class SimplifiedIndexBuilderNaive extends IndexBuilder {
         if (!ignoreAnnotations) {
             n.getAnnotations().forEach(p -> p.accept(this, arg));
         }
-        appendId(null, n.asString());
+        appendId(n.asString());
     }
 
     @Override
@@ -947,7 +922,7 @@ public class SimplifiedIndexBuilderNaive extends IndexBuilder {
         if (inMethod == 0) {
             return;
         }
-        appendId(null, n.getIdentifier());
+        appendId(n.getIdentifier());
     }
 
     @Override
@@ -1129,7 +1104,7 @@ public class SimplifiedIndexBuilderNaive extends IndexBuilder {
         append(n);
         n.getType().accept(this, arg);
         declareVar(n.getNameAsString(), n.getTypeAsString());
-        appendId(null, n.getNameAsString());
+        appendId(n.getNameAsString());
         n.getInitializer().ifPresent(p -> p.accept(this, arg));
         appendEnd(n);
     }
@@ -1152,7 +1127,7 @@ public class SimplifiedIndexBuilderNaive extends IndexBuilder {
             return;
         }
         if (treatVoidAsType) {
-            appendId(null, n.asString());
+            appendId(n.asString());
         } else {
             append(n);
         }

@@ -93,7 +93,6 @@ import java.util.Properties;
  */
 public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilder {
 
-    private final boolean methodLevel;
     private final EStack stack;
     private CTrie trie = new CTrie();
     private String srcFile;
@@ -101,7 +100,6 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
 
     public SimplifiedCompressedIndexBuilderNaive(Properties conf, Path srcDir) {
         super(conf, srcDir);
-        methodLevel = conf.getProperty("level", "method").equals("method");
         stack = new EStack(rename);
     }
 
@@ -157,24 +155,12 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         addChild(lab + "_end");
     }
 
-    private void addChildEndMethod(Node n) {
+    private void addChildEndWithPos(Node n) {
         String lab = n.getClass().getSimpleName() + "_end";
         addChild(lab);
-        if (methodLevel) {
-            EStackNode node = stack.peek();
-            List<String> labs = node.getLabels();
-            trie.add(labs, pos(n));
-        }
-    }
-
-    private void addChildEndStmt(Node n) {
-        String lab = n.getClass().getSimpleName() + "_end";
-        addChild(lab);
-        if (!methodLevel) {
-            EStackNode node = stack.peek();
-            List<String> labs = node.getLabels();
-            trie.add(labs, pos(n));
-        }
+        EStackNode node = stack.peek();
+        List<String> labs = node.getLabels();
+        trie.add(labs, pos(n));
     }
 
     private void addId(String id) {
@@ -278,7 +264,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         addChild(n);
         n.getCheck().accept(this, arg);
         n.getMessage().ifPresent(p -> p.accept(this, arg));
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -332,7 +318,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         }
         addChild(n);
         n.getLabel().ifPresent(p -> p.accept(this, arg));
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -472,7 +458,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         addChild("PARAMS_END");
         n.getThrownExceptions().forEach(p -> p.accept(this, arg));
         n.getBody().accept(this, arg);
-        addChildEndMethod(n);
+        addChildEndWithPos(n);
         stack.pop();
         inMethod--;
     }
@@ -484,7 +470,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         }
         addChild(n);
         n.getLabel().ifPresent(p -> p.accept(this, arg));
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -495,7 +481,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         addChild(n);
         n.getBody().accept(this, arg);
         n.getCondition().accept(this, arg);
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -512,7 +498,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
             return;
         }
         addChild(n);
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -540,7 +526,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         n.getArguments().forEach(p -> p.accept(this, arg));
         addChild("ARGS_END");
         addChildEnd(ref);
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -550,7 +536,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         }
         addChild(n);
         n.getExpression().accept(this, arg);
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -579,7 +565,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         n.getVariable().accept(this, arg);
         n.getIterable().accept(this, arg);
         n.getBody().accept(this, arg);
-        addChildEndStmt(n);
+        addChildEnd(n);
         exitBlock();
     }
 
@@ -598,7 +584,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         n.getUpdate().forEach(p -> p.accept(this, arg));
         addChild("UPDATE_END");
         n.getBody().accept(this, arg);
-        addChildEndStmt(n);
+        addChildEnd(n);
         exitBlock();
     }
 
@@ -611,7 +597,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         n.getCondition().accept(this, arg);
         n.getThenStmt().accept(this, arg);
         n.getElseStmt().ifPresent(p -> p.accept(this, arg));
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -625,7 +611,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         String lab = n.isStatic() ? "STATIC_INIT_DECL" : "INIT_DECL";
         addChild(lab);
         n.getBody().accept(this, arg);
-        addChildEndMethod(n);
+        addChildEndWithPos(n);
         stack.pop();
         inMethod--;
     }
@@ -670,7 +656,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         addChild(n);
         n.getLabel().accept(this, arg);
         n.getStatement().accept(this, arg);
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -779,7 +765,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
             addChild("THROWS_END");
         }
         n.getBody().ifPresent(p -> p.accept(this, arg));
-        addChildEndMethod(n);
+        addChildEndWithPos(n);
         exitBlock();
         stack.pop();
         inMethod--;
@@ -911,7 +897,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         }
         addChild(n);
         n.getExpression().ifPresent(p -> p.accept(this, arg));
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -981,7 +967,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         addChild(n);
         n.getSelector().accept(this, arg);
         n.getEntries().forEach(p -> p.accept(this, arg));
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -992,7 +978,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         addChild(n);
         n.getExpression().accept(this, arg);
         n.getBody().accept(this, arg);
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -1012,7 +998,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         }
         addChild(n);
         n.getExpression().accept(this, arg);
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override
@@ -1026,7 +1012,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         n.getTryBlock().accept(this, arg);
         n.getCatchClauses().forEach(p -> p.accept(this, arg));
         n.getFinallyBlock().ifPresent(p -> p.accept(this, arg));
-        addChildEndStmt(n);
+        addChildEnd(n);
         exitBlock();
     }
 
@@ -1138,7 +1124,7 @@ public class SimplifiedCompressedIndexBuilderNaive extends CompressedIndexBuilde
         addChild(n);
         n.getCondition().accept(this, arg);
         n.getBody().accept(this, arg);
-        addChildEndStmt(n);
+        addChildEnd(n);
     }
 
     @Override

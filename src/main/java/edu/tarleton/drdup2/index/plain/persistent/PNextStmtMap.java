@@ -101,7 +101,7 @@ public class PNextStmtMap {
 
     public void store(Storage storage) throws IOException {
         try (DataOutputStream out = new DataOutputStream(
-                new FileOutputStream(storage.getLabelFile()))) {
+                new FileOutputStream(storage.getNextStmtMapFile()))) {
             for (Pos stmt : nextStmtMap.keySet()) {
                 Pos next = nextStmtMap.get(stmt);
                 out.writeUTF(stmt.getFile());
