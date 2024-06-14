@@ -12,11 +12,12 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author Zdenek Tronicek, tronicek@tarleton.edu
  */
-@XmlType(name = "clone", propOrder = {"nlines", "similarity", "sources"})
+@XmlType(name = "clone", propOrder = {"nlines", "distance", "similarity", "sources"})
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class NiCadClone {
 
     private Integer nlines;
+    private Integer distance;
     private Integer similarity;
     private List<NiCadSource> sources;
 
@@ -36,6 +37,15 @@ public class NiCadClone {
 
     public void setNlines(Integer nlines) {
         this.nlines = nlines;
+    }
+    
+    @XmlAttribute
+    public Integer getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Integer distance) {
+        this.distance = distance;
     }
 
     @XmlAttribute

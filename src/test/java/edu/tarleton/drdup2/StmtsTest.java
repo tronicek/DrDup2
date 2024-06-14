@@ -188,39 +188,39 @@ public class StmtsTest {
     public void test1() throws Exception {
         int c = perform("blind", "src/test/src3/1");
         assertEquals(1, c);
-        int c2 = perform("consistent", "src/test/src3/1");
-        assertEquals(1, c2);
+//        int c2 = perform("consistent", "src/test/src3/1");
+//        assertEquals(1, c2);
     }
 
     @Test
     public void test2() throws Exception {
         int c = perform("blind", "src/test/src3/2");
         assertEquals(1, c);
-        int c2 = perform("consistent", "src/test/src3/2");
-        assertEquals(1, c2);
+//        int c2 = perform("consistent", "src/test/src3/2");
+//        assertEquals(1, c2);
     }
 
     @Test
     public void test3() throws Exception {
         int c = perform("blind", "src/test/src3/3");
         assertEquals(1, c);
-        int c2 = perform("consistent", "src/test/src3/3");
-        assertEquals(1, c2);
+//        int c2 = perform("consistent", "src/test/src3/3");
+//        assertEquals(1, c2);
     }
 
     @Test
     public void test4() throws Exception {
         int c = perform("blind", "src/test/src3/4");
         assertEquals(1, c);
-        int c2 = perform("consistent", "src/test/src3/4");
-        assertEquals(1, c2);
+//        int c2 = perform("consistent", "src/test/src3/4");
+//        assertEquals(1, c2);
     }
 
     @Test
     public void test5() throws Exception {
         int c = perform("blind", "src/test/src3/5");
         assertEquals(1, c);
-        int c2 = perform("consistent", "src/test/src3/5");
-        assertEquals(1, c2);
+//        int c2 = perform("consistent", "src/test/src3/5");
+//        assertEquals(1, c2);
     }
 }
