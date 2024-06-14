@@ -1,4 +1,4 @@
-# DrDupLex3
+# DrDup2
 DrDup2 is a novel clone detector based on the index of abstract syntax trees.
 Please, see the following paper for details:
 
