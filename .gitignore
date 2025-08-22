@@ -5,6 +5,7 @@
 /output/
 /performance/
 /target/
+!/target/DrDupLex-1.0-jar-with-dependencies.jar
 /verification/**/*.xml
 /verification-stmt/**/*.xml
 /verification-stmts/**/*.xml
