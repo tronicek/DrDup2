@@ -13,7 +13,7 @@ mvn clean compile assembly:single
 ```
 
 ## Latest Version
-Latest version is available for download: <a href="https://github.com/tronicek/DrDup2/blob/master/DrDup2-1.0-jar-with-dependencies.jar">here</a> (select "Download raw file").
+Latest version is available for download <a href="https://github.com/tronicek/DrDup2/blob/master/DrDup2-1.0-jar-with-dependencies.jar">here</a> (select "Download raw file").
 
 
 ## Running
